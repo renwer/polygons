@@ -1,0 +1,34 @@
+services:
+
+  fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - ./app:/app
+    depends_on:
+      - redis
+    networks:
+      - app-network
+
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PORT=6379
+    volumes:
+      - redis:/data
+    networks:
+      - app-network
+
+volumes:
+  redis:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
